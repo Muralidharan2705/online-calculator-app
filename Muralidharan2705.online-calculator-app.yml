@@ -1,0 +1,23 @@
+variables:
+- name: buildConfiguration
+  value: 'Release'
+stages:
+- stage: __default
+  jobs:
+  - job: Job
+    steps:
+    - task: CmdLine@2
+      displayName: 'dotnet build $(buildConfiguration)'
+      inputs:
+        script: dotnet build --configuration $(buildConfiguration)
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: true
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'Murali'
+        appType: 'webAppLinux'
+        appName: 'mur-test-app'
+        package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
